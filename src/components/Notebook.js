@@ -1,31 +1,37 @@
 import React from 'react';
+import CreateNotebook from './CreateNotebook';
+import base from '../base';
 import PropTypes from 'prop-types';
 
 class Notebook extends React.Component {
 
-    notebookInput = React.createRef();
-
-    loadNotebook = (event) => {
-        // 1. Prevent Page Refresh
-        event.preventDefault();
-        // 2. Grab Input
-        const notebookName = this.notebookInput.current.value;
-        // 3. Route to Notebook
-        this.props.history.push(`/notebook/${notebookName}`);
+    // State maintains a collection of notebooks
+    // - Each index contains a notebook name, uid, and creation date
+    state = {
+        collection: []
     };
+
+    addNotebook = (notebook) => {
+        this.setState({
+            collection: [...this.state.collection, notebook]
+        });
+    };
+
+    componentDidUpdate() {
+        //console.log(this.state.collection);
+    }
 
     render() {
         return (
-            <form className="create-notebook-form" onSubmit={this.loadNotebook}>
-                <h2>Create a New Notebook</h2>
-                <input
-                    type="text"
-                    ref={this.notebookInput}
-                    required
-                    placeholder="Create a notebook"
+            <div className="notebook-collection">
+                <CreateNotebook
+                    addNotebook={this.addNotebook}
                 />
-                <button type="submit">Make Notebook</button>
-            </form>
+                <h2>Notebook Collection [{this.state.collection.length}]</h2>
+                {Object.keys(this.state.collection).map(key => (
+                    <div key={key}>{this.state.collection[key].name}</div>
+                ))}
+            </div>
         );
     };
 }
