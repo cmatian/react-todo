@@ -26,6 +26,15 @@ class Notebook extends React.Component {
             created: this.formatDate(),
             uid: Date.now()
         };
+
+        // Check the state property and see if the name already exists
+        // If it is a duplicate return an alert and don't add the notebook to state
+        for(let i = 0; i < this.props.notebooks.length; i++) {
+            if(notebook.name.toLowerCase() === this.props.notebooks[i].name.toLowerCase()) {
+                return alert('Notebook name is already in use.');
+            }
+        }
+
         // Pass Notebook to State
         this.props.addNotebook(notebook);
     };

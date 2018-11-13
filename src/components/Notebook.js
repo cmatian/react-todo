@@ -18,7 +18,7 @@ class Notebook extends React.Component {
     };
 
     componentDidUpdate() {
-        //console.log(this.state.collection);
+        // Do Nothing Yet
     }
 
     render() {
@@ -26,10 +26,13 @@ class Notebook extends React.Component {
             <div className="notebook-collection">
                 <CreateNotebook
                     addNotebook={this.addNotebook}
+                    notebooks={this.state.collection}
                 />
                 <h2>Notebook Collection [{this.state.collection.length}]</h2>
                 {Object.keys(this.state.collection).map(key => (
-                    <div key={key}>{this.state.collection[key].name}</div>
+                    <div key={key}>
+                        {this.state.collection[key].name}
+                    </div>
                 ))}
             </div>
         );
