@@ -21,10 +21,13 @@ class Notebook extends React.Component {
     createNotebook = (event) => {
         event.preventDefault();
 
+        const inputValue = this.notebookInput.current.value;
+
         const notebook = {
-            name: this.notebookInput.current.value,
-            created: this.formatDate(),
-            uid: Date.now()
+            name: inputValue,                                                 // Name
+            link: `/notebook/${encodeURIComponent(inputValue)}`,              // Link
+            created: this.formatDate(),                                       // Creation Date
+            uid: Date.now()                                                   // Unique ID number
         };
 
         // Check the state property and see if the name already exists
