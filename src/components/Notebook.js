@@ -8,14 +8,15 @@ class Notebook extends React.Component {
     // State maintains a collection of notebooks
     // - Each index contains a notebook name, uid, and creation date
     state = {
-        collection: []
+        collection: {}
     };
 
 
 
     // Component Mounting Method's
     componentDidMount() {
-        const params = this.state.match;
+
+        const params = {...this.state.collection};
 
         console.log(params);
 
@@ -33,12 +34,9 @@ class Notebook extends React.Component {
         // });
     }
 
-    // componentDidUpdate() {
-    //     localStorage.setItem(
-    //         this.props.match.params.notebookId,
-    //         JSON.stringify(this.state.collection)
-    //     );
-    // }
+    componentDidUpdate() {
+        console.log(this.state.collection)
+    }
     //
     // componentWillUnmount() {
     //     base.removeBinding(this.ref);
@@ -47,22 +45,23 @@ class Notebook extends React.Component {
 
 
     addNotebook = (notebook) => {
-        this.setState({
-            collection: [...this.state.collection, notebook]
-        });
+
+        const collection = {...this.state.collection};
+
+        collection[`${notebook.name}`] = notebook;
+
+        this.setState({ collection });
     };
 
     deleteNotebook = (notebookKey) => {
         // Copy of State
-        const notebooks = [...this.state.collection];
+        const collection = {...this.state.collection};
 
         // Set the item to null
-        notebooks.splice(notebookKey, 1);
+        delete collection[notebookKey];
 
         // Update State with the updated array
-        this.setState({
-            collection: notebooks
-        });
+        this.setState({ collection });
     };
 
     render() {
@@ -72,7 +71,7 @@ class Notebook extends React.Component {
                     addNotebook={this.addNotebook}
                     notebooks={this.state.collection}
                 />
-                <h2>Notebook Collection [{this.state.collection.length}]</h2>
+                <h2>Notebook Collection [{Object.keys(this.state.collection).length}]</h2>
                 {Object.keys(this.state.collection).map(key => (
                     <div key={key}>
                         <Link to={this.state.collection[key].link}>{this.state.collection[key].name}</Link>
