@@ -1,6 +1,7 @@
 import React from 'react';
 import CreateNotebook from './CreateNotebook';
 import { Link } from "react-router-dom";
+import base from '../base';
 import PropTypes from 'prop-types';
 
 class Notebook extends React.Component {
@@ -11,37 +12,36 @@ class Notebook extends React.Component {
         collection: {}
     };
 
-
-
     // Component Mounting Method's
     componentDidMount() {
 
-        const params = {...this.state.collection};
+        const localStorageRef = localStorage.getItem("Notebooks");
 
-        console.log(params);
+        if(localStorageRef) {
+            this.setState({
+                collection: JSON.parse(localStorageRef)
+            })
+        }
 
-        // const localStorageRef = localStorage.getItem(params.notebookId);
-
-        // if(localStorageRef) {
-        //     this.setState({
-        //         collection: [JSON.parse(localStorageRef)]
-        //     })
-        // }
-        //
-        // this.ref = base.syncState(`${params.notebookId}`, {
-        //     context: this,
-        //     state: 'Notebooks'
-        // });
+        this.ref = base.syncState(`/`, {
+            context: this,
+            state: 'collection'
+        });
     }
 
     componentDidUpdate() {
-        console.log(this.state.collection)
-    }
-    //
-    // componentWillUnmount() {
-    //     base.removeBinding(this.ref);
-    // };
 
+        const params = {...this.state.collection};
+
+        localStorage.setItem(
+            "Notebooks",
+            JSON.stringify(params)
+        );
+    }
+
+    componentWillUnmount() {
+        base.removeBinding(this.ref);
+    };
 
 
     addNotebook = (notebook) => {
