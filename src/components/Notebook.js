@@ -58,7 +58,7 @@ class Notebook extends React.Component {
         const collection = {...this.state.collection};
 
         // Set the item to null
-        delete collection[notebookKey];
+        collection[notebookKey] = null;
 
         // Update State with the updated array
         this.setState({ collection });
