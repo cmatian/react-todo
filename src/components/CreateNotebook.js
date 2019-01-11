@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class Notebook extends React.Component {
+class CreateNotebook extends React.Component {
 
     notebookInput = React.createRef();
 
@@ -18,29 +18,38 @@ class Notebook extends React.Component {
         return date.toLocaleDateString('en-US', options);
     };
 
+    formatLink = (input) => {
+        let link = input.toLowerCase();
+        // Replace Space With - for hyperlink
+        link = link.replace(/\s+/g, "-");
+        return `/notebook/${link}`
+    };
+
     createNotebook = (event) => {
         event.preventDefault();
 
-        const inputValue = this.notebookInput.current.value;
+        const inputValue = (this.notebookInput.current.value).replace(/(^\s+|[^a-zA-Z0-9 ]+|\s+$)/g,"");
 
         const notebook = {
-            name: inputValue,                                                 // Name
-            link: `/notebook/${encodeURIComponent(inputValue)}`,              // Link
-            created: this.formatDate(),                                       // Creation Date
-            uid: Date.now()                                                   // Unique ID number
+            name: inputValue,
+            link: this.formatLink(inputValue),
+            created: this.formatDate(),
+            uid: Date.now()
         };
 
         // Check the state property and see if the name already exists
         // If it is a duplicate return an alert and don't add the notebook to state
-        const keys = Object.keys(this.props.notebooks);
+        const keys = Object.keys(this.props.collection);
         for (const key of keys) {
             if(key === notebook.name) {
                 return alert('That notebook already exists, please use a different name.');
             }
         }
 
-        // Pass Notebook to State
+        // Add the notebook to the state "collection"
         this.props.addNotebook(notebook);
+
+        event.currentTarget.reset();
     };
 
     render() {
@@ -59,4 +68,4 @@ class Notebook extends React.Component {
     };
 }
 
-export default Notebook;
+export default CreateNotebook;

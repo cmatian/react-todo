@@ -1,83 +1,54 @@
 import React from 'react';
-import CreateNotebook from './CreateNotebook';
 import { Link } from "react-router-dom";
-import base from '../base';
-import PropTypes from 'prop-types';
 
 class Notebook extends React.Component {
 
-    // State maintains a collection of notebooks
-    // - Each index contains a notebook name, uid, and creation date
     state = {
-        collection: {}
+        isInEditMode: false
     };
 
-    // Component Mounting Method's
-    componentDidMount() {
-
-        const localStorageRef = localStorage.getItem("Notebooks");
-
-        if(localStorageRef) {
-            this.setState({
-                collection: JSON.parse(localStorageRef)
-            })
+    // Handle Display of the Input for editing
+    editNotebook = () => {
+        //1.
+        if(this.state.isInEditMode === true) {
+            // Do Something
+            console.log("Message while in Edit Mode");
         }
 
-        this.ref = base.syncState(`/`, {
-            context: this,
-            state: 'collection'
-        });
-    }
-
-    componentDidUpdate() {
-
-        const params = {...this.state.collection};
-
-        localStorage.setItem(
-            "Notebooks",
-            JSON.stringify(params)
+        // 2. Update the State of the Edit Fields
+        this.setState(prevState => ({
+                isInEditMode: !prevState.isInEditMode
+            })
         );
-    }
-
-    componentWillUnmount() {
-        base.removeBinding(this.ref);
     };
 
-
-    addNotebook = (notebook) => {
-
-        const collection = {...this.state.collection};
-
-        collection[`${notebook.name}`] = notebook;
-
-        this.setState({ collection });
+    sendPayload = (updatedNotebook) => {
+        this.props.updatdNotebook(this.props.index, updatedNotebook);
     };
 
-    deleteNotebook = (notebookKey) => {
-        // Copy of State
-        const collection = {...this.state.collection};
+    handleChange = (event) => {
 
-        // Set the item to null
-        collection[notebookKey] = null;
+        const updatedNotebook = {
+            ...this.props.collection[this.props.index],
+            name: event.currentTarget.value
+        };
 
-        // Update State with the updated array
-        this.setState({ collection });
+        console.log(updatedNotebook);
+
+        // 1. We have to update the name of the notebook
+        //this.props.updateNotebook(this.props.index, updatedNotebook);
+        // 2. We have to update the link of the notebook
     };
 
     render() {
-        return (
-            <div className="notebook-collection">
-                <CreateNotebook
-                    addNotebook={this.addNotebook}
-                    notebooks={this.state.collection}
-                />
-                <h2>Notebook Collection [{Object.keys(this.state.collection).length}]</h2>
-                {Object.keys(this.state.collection).map(key => (
-                    <div key={key}>
-                        <Link to={this.state.collection[key].link}>{this.state.collection[key].name}</Link>
-                        <button onClick={() => this.deleteNotebook(key)}>Delete</button>
-                    </div>
-                ))}
+        return(
+            <div>
+                {this.state.isInEditMode === true ?
+                    <input onChange={this.handleChange} defaultValue={this.props.collection[this.props.index].name}/> :
+                    <Link to={this.props.collection[this.props.index].link}>{this.props.collection[this.props.index].name}</Link>
+                }
+                <button onClick={this.editNotebook}>{this.state.isInEditMode === true ? "Save" : "Edit"}</button>
+                <button onClick={() => this.props.deleteNotebook(this.props.index)}>Delete</button>
             </div>
         );
     };

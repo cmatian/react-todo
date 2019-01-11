@@ -1,15 +1,14 @@
 import React from'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Notes from './Notes';
 import App from './App';
-import Notebook from './Notebook';
-import { collection } from './Notebook';
 import NotFound from './NotFound';
 
 const Router = () => (
     <BrowserRouter>
         <Switch>
-            <Route exact path="/" component={Notebook}/>
-            <Route path="/notebook/:notebookId" component={App}/>
+            <Route exact path="/" component={App}/>
+            <Route path="/notebook/:notebookId" component={Notes}/>
             <Route component={NotFound} />
         </Switch>
     </BrowserRouter>
